@@ -15,6 +15,163 @@ A secure and stealthy API service that generates unique, metamorphic PowerShell 
   - `/download`: Serves payload as downloadable .ps1 file
 - **Unique Payloads**: Each generation creates a different payload, verified through MD5 hashing
 
+## Metamorphic Engine Architecture
+
+The metamorphic engine employs several sophisticated techniques to generate unique, obfuscated payloads:
+
+### 1. Code Transformation Layers
+
+#### Variable Name Morphing
+- **Unicode Character Sets**: Utilizes multiple character sets including:
+  - Greek uppercase letters
+  - Cyrillic characters
+  - Mathematical script symbols
+  - Double-struck characters
+- **Dynamic Naming**: Generates unique variable names with:
+  - Random prefixes (e.g., 'tmp', 'var', 'obj', 'str')
+  - Random suffixes (e.g., 'Obj', 'Val', 'Str', 'Int')
+  - Case mixing (random upper/lower case)
+  - Length variation (8-20 characters)
+
+#### String Obfuscation
+- **Multiple Encoding Methods**:
+  - Base64 encoding with UTF8 conversion
+  - Hexadecimal representation
+  - Character array construction
+  - String splitting and joining
+  - Format string manipulation
+  - String concatenation
+  - Reverse string operations
+  - XOR encryption with random keys
+
+#### Integer Obfuscation
+- **Mathematical Transformations**:
+  - Random number splitting
+  - Hexadecimal representation
+  - String parsing
+  - Sum decomposition
+
+### 2. Polymorphic Components
+
+#### Dynamic Code Generation
+- **Function Signatures**: Creates unique function names and parameters
+- **Control Flow**: Randomizes code block ordering
+- **Variable Scope**: Implements dynamic scoping
+- **Type Conversions**: Random type casting and conversion
+
+#### Code Structure Variation
+- **Block Reordering**: Shuffles code blocks while maintaining functionality
+- **Junk Code Injection**: Adds non-functional code blocks:
+  - Random variable declarations
+  - Dummy function definitions
+  - Conditional statements
+  - Array operations
+  - String manipulations
+  - Date/time operations
+  - GUID generation
+  - Hash table creation
+  - Regular expression patterns
+  - XML/JSON operations
+
+### 3. Anti-Analysis Features
+
+#### AMSI Bypass Techniques
+- **Multiple Bypass Methods**:
+  - Reflection-based bypass
+  - Memory patching
+  - Add-Type injection
+  - Environment variable manipulation
+  - Provider removal
+- **Random Selection**: Each payload uses a different bypass method
+
+#### Network Operations
+- **Dynamic C2 Selection**: Random endpoint selection from predefined list
+- **Connection Timing**: Random delays between operations
+- **Error Handling**: Silent error suppression
+- **Encryption**: AES encryption with random keys and IVs
+
+### 4. Helper Functions
+
+The engine includes a comprehensive set of utility functions:
+- `Convert-StringToBytes`: UTF8 string to byte array conversion
+- `Convert-ToBase64`: Base64 encoding
+- `Convert-FromBase64`: Base64 decoding
+- `Convert-ToHex`: Hexadecimal encoding
+- `Convert-FromHex`: Hexadecimal decoding
+- `Convert-Rot13`: ROT13 transformation
+- `Convert-ToUnicode`: Unicode escape sequence conversion
+- `Convert-FromUnicode`: Unicode escape sequence decoding
+- `Convert-ToBinary`: Binary string conversion
+- `Convert-FromBinary`: Binary string decoding
+
+### 5. Payload Generation Process
+
+1. **Initialization**:
+   - Generate unique filename with timestamp
+   - Initialize variable name mapping
+   - Select random AMSI bypass technique
+
+2. **Core Components**:
+   - AMSI bypass implementation
+   - AES encryption setup
+   - Network operation configuration
+
+3. **Obfuscation**:
+   - Apply variable name morphing
+   - Implement string obfuscation
+   - Add integer obfuscation
+   - Inject junk code (15-25 random blocks)
+
+4. **Finalization**:
+   - Add error handling preferences
+   - Include helper functions
+   - Combine all components
+   - Save to unique file
+
+## API Implementation
+
+### Core Components
+
+1. **Payload Generator (`payload_generator.py`)**
+   - Implements the metamorphic engine
+   - Handles code transformation and obfuscation
+   - Manages payload uniqueness verification
+   - Provides payload validation and sanitization
+
+2. **API Server (`app.py`)**
+   - Flask-based REST API implementation
+   - Secure endpoint routing
+   - API key validation
+   - Response formatting and error handling
+
+3. **Configuration (`config.py`)**
+   - API key management
+   - Endpoint configuration
+   - Security settings
+   - Generation parameters
+
+### API Endpoints
+
+1. **Generate Endpoint (`/generate`)**
+   ```http
+   POST /generate
+   Headers:
+     x-api-key: your_api_key_here
+   Response:
+     Content-Type: text/plain
+     Body: Obfuscated PowerShell payload
+   ```
+
+2. **Download Endpoint (`/download`)**
+   ```http
+   GET /download/payload.ps1
+   Headers:
+     x-api-key: your_api_key_here
+   Response:
+     Content-Type: application/octet-stream
+     Content-Disposition: attachment; filename=payload.ps1
+   ```
+
 ## Prerequisites
 
 - Python 3.6+
@@ -90,6 +247,9 @@ chmod +x test_*.sh
 - API key is required for all endpoints
 - No default routes or index pages
 - Each payload is unique and obfuscated
+- Rate limiting and request validation
+- Input sanitization and validation
+- Secure error handling
 
 ## Project Structure
 
