@@ -1,0 +1,200 @@
+version: '3.8'
+
+services:
+  # Main API service
+  metamorphic-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: metamorphic_payload_api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+      - HOST=0.0.0.0
+      - PORT=8080
+      - API_KEY=${API_KEY:-your_secure_api_key_here_minimum_32_characters}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-auto_generated_secret}
+      - RATE_LIMIT_PER_MINUTE=100
+      - MAX_PAYLOAD_SIZE=1024000
+      - MAX_CONCURRENT_GENERATIONS=5
+      - LOG_LEVEL=INFO
+      - ENABLE_METRICS=true
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///data/payloads.db}
+    volumes:
+      - ./logs:/app/logs
+      - ./output:/app/output
+      - ./data:/app/data
+      - metrics_data:/app/monitoring
+    networks:
+      - metamorphic-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - staging-server
+      - redis
+
+  # Staging server for payload hosting
+  staging-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.staging
+    container_name: metamorphic_staging_server
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      - FLASK_ENV=production
+      - HOST=0.0.0.0
+      - PORT=9090
+      - LOG_LEVEL=INFO
+      - STAGING_SECRET_KEY=${STAGING_SECRET_KEY:-default_staging_key_change_in_production}
+      - ENCRYPTION_KEY=${STAGING_ENCRYPTION_KEY:-secure_encryption_key_32_chars}
+    volumes:
+      - ./logs:/app/logs
+      - ./staging_payloads:/app/staging_payloads
+      - ./data:/app/data
+    networks:
+      - metamorphic-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Redis for caching and enhanced rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: metamorphic_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - metamorphic-network
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Nginx reverse proxy for production deployment
+  nginx:
+    image: nginx:alpine
+    container_name: metamorphic_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    networks:
+      - metamorphic-network
+    depends_on:
+      - metamorphic-api
+      - staging-server
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.metamorphic-api.rule=Host(`api.metamorphic.local`)"
+      - "traefik.http.routers.metamorphic-api.tls=true"
+      - "traefik.http.services.metamorphic-api.loadbalancer.server.port=8080"
+
+  redis:
+    image: redis:7-alpine
+    container_name: metamorphic_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_password_123}
+    restart: unless-stopped
+    networks:
+      - metamorphic-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: metamorphic_prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - metamorphic-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: metamorphic_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    restart: unless-stopped
+    networks:
+      - metamorphic-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: metamorphic_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - metamorphic-api
+    restart: unless-stopped
+    networks:
+      - metamorphic-network
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: metamorphic_watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 2 * * *  # Daily at 2 AM
+    restart: unless-stopped
+    networks:
+      - metamorphic-network
+
+volumes:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  metamorphic-network:
+    driver: bridge

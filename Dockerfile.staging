@@ -1,0 +1,47 @@
+# Dockerfile for Staging Server
+FROM python:3.12-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_APP=staging_server.py \
+    FLASK_ENV=production
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    gcc \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application files
+COPY staging_server.py .
+COPY config.py .
+COPY logging_config.py .
+
+# Create necessary directories
+RUN mkdir -p logs staging_payloads data && \
+    chmod +x *.sh 2>/dev/null || true
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:9090/health || exit 1
+
+# Expose port
+EXPOSE 9090
+
+# Start command
+CMD ["python", "staging_server.py"]

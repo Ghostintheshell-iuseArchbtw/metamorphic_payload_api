@@ -1,0 +1,250 @@
+2025-06-09 17:06:47 - metamorphic_api - INFO - [logging_config.py:121] - Payload written to file: metamorphic_payload_20250609_170647_898165_21wwa5I0M4Oh.ps1
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Database initialized successfully
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Starting Metamorphic Payload API v2.0.0
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Configuration loaded - Debug: False, Port: 8080
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Metrics collection started
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Added alert rule: High CPU Usage
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Added alert rule: High Memory Usage
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Added alert rule: Slow Payload Generation
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Added alert rule: High Error Rate
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Alert monitoring started
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Monitoring system started successfully
+2025-06-09 17:54:23 - metamorphic_api - INFO - [logging_config.py:121] - Monitoring system enabled
+2025-06-09 17:58:34 - metamorphic_api - ERROR - [logging_config.py:127] - Payload Generation failed after 0.000s: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:34 - metamorphic_api - ERROR - [logging_config.py:127] - Error generating payload: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+Traceback (most recent call last):
+  File "C:\Users\range\Desktop\metamorphic_payload_api\app.py", line 84, in generate_payload
+    request_data = request.get_json() or {}
+                   ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 604, in get_json
+    return self.on_json_loading_failed(None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\flask\wrappers.py", line 131, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 647, in on_json_loading_failed
+    raise UnsupportedMediaType(
+werkzeug.exceptions.UnsupportedMediaType: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:36 - metamorphic_api - ERROR - [logging_config.py:127] - Payload Generation failed after 0.000s: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:36 - metamorphic_api - ERROR - [logging_config.py:127] - Error generating payload: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+Traceback (most recent call last):
+  File "C:\Users\range\Desktop\metamorphic_payload_api\app.py", line 84, in generate_payload
+    request_data = request.get_json() or {}
+                   ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 604, in get_json
+    return self.on_json_loading_failed(None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\flask\wrappers.py", line 131, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 647, in on_json_loading_failed
+    raise UnsupportedMediaType(
+werkzeug.exceptions.UnsupportedMediaType: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:38 - metamorphic_api - ERROR - [logging_config.py:127] - Payload Generation failed after 0.005s: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:38 - metamorphic_api - ERROR - [logging_config.py:127] - Error generating payload: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+Traceback (most recent call last):
+  File "C:\Users\range\Desktop\metamorphic_payload_api\app.py", line 84, in generate_payload
+    request_data = request.get_json() or {}
+                   ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 604, in get_json
+    return self.on_json_loading_failed(None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\flask\wrappers.py", line 131, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 647, in on_json_loading_failed
+    raise UnsupportedMediaType(
+werkzeug.exceptions.UnsupportedMediaType: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:41 - metamorphic_api - ERROR - [logging_config.py:127] - Payload Generation failed after 0.000s: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:58:41 - metamorphic_api - ERROR - [logging_config.py:127] - Error generating payload: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+Traceback (most recent call last):
+  File "C:\Users\range\Desktop\metamorphic_payload_api\app.py", line 84, in generate_payload
+    request_data = request.get_json() or {}
+                   ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 604, in get_json
+    return self.on_json_loading_failed(None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\flask\wrappers.py", line 131, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\range\Desktop\metamorphic_payload_api\.venv\Lib\site-packages\werkzeug\wrappers\request.py", line 647, in on_json_loading_failed
+    raise UnsupportedMediaType(
+werkzeug.exceptions.UnsupportedMediaType: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-06-09 17:59:45 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 62
+2025-06-09 17:59:45 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 2b3be7d2313cfe79c344f2759671c9e27df8c2df9f25e909bb773372f6e22a26, Time: 0.000s
+2025-06-09 17:59:47 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 310
+2025-06-09 17:59:47 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 841125c8e4dd12a3e614ebdc4b998b273c0903183f4e2aecbea2f0a40d3b3550, Time: 0.000s
+2025-06-09 17:59:50 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 323
+2025-06-09 17:59:50 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 4d6780e44c5bfdcb3318f42315f944f5c5a1067d73d46f907f7424685c86e786, Time: 0.004s
+2025-06-09 17:59:52 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 323
+2025-06-09 17:59:52 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 06488f396fd8f6c9b180340318fa5ac621b9068e6a6f497804e15400b4aee62f, Time: 0.000s
+2025-06-09 18:00:50 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 426
+2025-06-09 18:00:50 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 49e7504ef5bdb6b161289d1e18629266cdd21be160d3bd6018048ec5b1ad7605, Time: 0.000s
+2025-06-09 18:00:50 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 311
+2025-06-09 18:00:50 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 0b6875cbedb44c986c2c3c641a059963fa4eb37580e6b38045d99a2e807e9504, Time: 0.001s
+2025-06-09 18:00:50 - metamorphic_api - INFO - [logging_config.py:121] - Generated multi_stage payload with complexity score: 442
+2025-06-09 18:00:50 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: multi_stage, Hash: f2901ca453500eaeead7bf0fde91ba086644425c3f93f2b8d8e96a278f9abc45, Time: 0.000s
+2025-06-09 18:00:52 - metamorphic_api - INFO - [logging_config.py:121] - Generated reflective payload with complexity score: 357
+2025-06-09 18:00:52 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: reflective, Hash: cf2d8bb33090fc0564d93c2df9a72e04521e45b596949f962fb7a4471cccedde, Time: 0.000s
+2025-06-09 18:00:55 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 250
+2025-06-09 18:00:55 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: c76f8d7b077960c64bd4f2c88db29d261e6c75cd630ccc391dc8e2680b4ef2c8, Time: 0.000s
+2025-06-09 18:02:32 - metamorphic_api - INFO - [logging_config.py:121] - Generated multi_stage payload with complexity score: 292
+2025-06-09 18:02:32 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: multi_stage, Hash: 719d81f3362611c7bf946014a363a699975e5c7180979be72bf77f2818c07640, Time: 0.002s
+2025-06-09 18:02:35 - metamorphic_api - INFO - [logging_config.py:121] - Generated multi_stage payload with complexity score: 503
+2025-06-09 18:02:35 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: multi_stage, Hash: 7a126c25e6f7bdb2ea9318571329a4b147ba4575263581df2ec81dab1443c17d, Time: 0.001s
+2025-06-09 18:02:37 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 413
+2025-06-09 18:02:37 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: a97f1ed6975373f6efce0acf1a96d00d542f09ea7a4b9cf5ee281fd70299ef2c, Time: 0.001s
+2025-06-09 18:02:40 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 231
+2025-06-09 18:02:40 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 9ea737f26346f002687391865fe01963ba39800638437ab468a9b7dee157bf4f, Time: 0.000s
+2025-06-09 18:02:42 - metamorphic_api - INFO - [logging_config.py:121] - Generated multi_stage payload with complexity score: 447
+2025-06-09 18:02:42 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: multi_stage, Hash: 859d46b6f7cfb3b52db364bd17523090f1fc17160e8be75cfac696be93048b12, Time: 0.000s
+2025-06-09 18:02:45 - metamorphic_api - INFO - [logging_config.py:121] - Generated traditional payload with complexity score: 202
+2025-06-09 18:02:45 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: traditional, Hash: d15ff36eadd7269f1cacd852a060fe670cdccd38121ba155b617ac8cc598146d, Time: 0.000s
+2025-06-09 18:02:47 - metamorphic_api - INFO - [logging_config.py:121] - Generated traditional payload with complexity score: 397
+2025-06-09 18:02:47 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: traditional, Hash: f4200a136f1fd5063bef71b9df988f970bc3f1de7f646a2955fb96d2c6e2714d, Time: 0.000s
+2025-06-09 18:02:50 - metamorphic_api - INFO - [logging_config.py:121] - Generated multi_stage payload with complexity score: 284
+2025-06-09 18:02:50 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: multi_stage, Hash: 53c68498609422ae5198f89d9e31098efbe4d0385f53657657323be9b05c6d6d, Time: 0.003s
+2025-06-09 18:03:43 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 75
+2025-06-09 18:03:43 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 3d0fb5baad7ee3e3454182e2bf83e160ba71c140e89a8f55451d3581691dc39e, Time: 0.002s
+2025-06-09 18:03:45 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 323
+2025-06-09 18:03:45 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 2709cbeb8cbce9cca525a529657e4e2d77726cb61f271ce532bdd0180fa666b3, Time: 0.000s
+2025-06-09 18:03:48 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 301
+2025-06-09 18:03:48 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: 43d68ece1a3d111f37da16d292960941de8773af4ab453cea11f1f7f9f0e4d43, Time: 0.003s
+2025-06-09 18:03:51 - metamorphic_api - INFO - [logging_config.py:121] - Generated staged payload with complexity score: 323
+2025-06-09 18:03:51 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: staged, Hash: fb2738e574b252c70193bf267b6f7834d7436cecac34e1b1e356556bf694fdbd, Time: 0.001s
+2025-06-09 18:05:11 - metamorphic_api - INFO - [logging_config.py:121] - Generated multi_stage payload with complexity score: 574
+2025-06-09 18:05:11 - metamorphic_api - INFO - [logging_config.py:121] - Payload generated successfully - Type: multi_stage, Hash: 15d2a3885944a5de8f06ada24a2af369b31ac939f3c932abfba1056fa7a60ae1, Time: 0.000s
+2025-06-09 18:19:23 - metamorphic_api - WARNING - [logging_config.py:124] - ALERT TRIGGERED: Alert: High CPU Usage - system.cpu.percent is 87.50 (threshold: 85.0)
+2025-06-09 18:19:23 - metamorphic_api - CRITICAL - [logging_config.py:133] - ALERT: Alert: High CPU Usage - system.cpu.percent is 87.50 (threshold: 85.0)
+2025-06-09 18:28:02 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:32:18 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:33:00 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:36:30 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:38:05 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:38:05 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:38:05 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:38:05 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=3
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'EnhancedPayloadGenerator' object has no attribute '_generate_advanced_error_handling'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=multi_stage, complexity=5
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=reflective, complexity=7
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Using ultra-advanced generator for traditional
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating ultra payload: type=traditional, complexity=9
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Ultra Payload Generation failed after 0.006s: 'QuantumObfuscationEngine' object has no attribute '_apply_quantum_string_encoding'
+2025-06-09 18:39:09 - metamorphic_api - WARNING - [logging_config.py:124] - Ultra generator failed, falling back: 'QuantumObfuscationEngine' object has no attribute '_apply_quantum_string_encoding'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=traditional, complexity=9
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.006s: 'AdvancedObfuscationEngine' object has no attribute 'generate_unicode_variable'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=quantum_staged, complexity=8
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=neural_multi_stage, complexity=7
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=holographic_reflective, complexity=6
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.001s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=metamorphic_traditional, complexity=5
+2025-06-09 18:39:09 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:39:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:41:23 - metamorphic_api - WARNING - [logging_config.py:124] - ALERT TRIGGERED: Alert: High CPU Usage - system.cpu.percent is 89.50 (threshold: 85.0)
+2025-06-09 18:41:23 - metamorphic_api - CRITICAL - [logging_config.py:133] - ALERT: Alert: High CPU Usage - system.cpu.percent is 89.50 (threshold: 85.0)
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=3
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'EnhancedPayloadGenerator' object has no attribute '_generate_advanced_error_handling'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=multi_stage, complexity=5
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=reflective, complexity=7
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.002s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Using ultra-advanced generator for traditional
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating ultra payload: type=traditional, complexity=9
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Ultra Payload Generation failed after 0.000s: 'QuantumObfuscationEngine' object has no attribute '_apply_quantum_string_encoding'
+2025-06-09 18:41:34 - metamorphic_api - WARNING - [logging_config.py:124] - Ultra generator failed, falling back: 'QuantumObfuscationEngine' object has no attribute '_apply_quantum_string_encoding'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=traditional, complexity=9
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'generate_unicode_variable'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=quantum_staged, complexity=8
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=neural_multi_stage, complexity=7
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=holographic_reflective, complexity=6
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=metamorphic_traditional, complexity=5
+2025-06-09 18:41:34 - metamorphic_api - ERROR - [logging_config.py:127] - Enhanced Payload Generation failed after 0.000s: 'AdvancedObfuscationEngine' object has no attribute 'apply_advanced_obfuscation'
+2025-06-09 18:41:34 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:43:28 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:43:28 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:02 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:45:02 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=3
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2947 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=multi_stage, complexity=5
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3394 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=reflective, complexity=7
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2676 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Using ultra-advanced generator for traditional
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating ultra payload: type=traditional, complexity=9
+2025-06-09 18:45:09 - metamorphic_api - ERROR - [logging_config.py:127] - Ultra Payload Generation failed after 0.000s: 'QuantumObfuscationEngine' object has no attribute '_apply_quantum_string_encoding'
+2025-06-09 18:45:09 - metamorphic_api - WARNING - [logging_config.py:124] - Ultra generator failed, falling back: 'QuantumObfuscationEngine' object has no attribute '_apply_quantum_string_encoding'
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=traditional, complexity=9
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2061 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=quantum_staged, complexity=8
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2673 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=neural_multi_stage, complexity=7
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3144 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=holographic_reflective, complexity=6
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3726 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=metamorphic_traditional, complexity=5
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2056 chars, complexity=100
+2025-06-09 18:45:09 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:17 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:45:17 - metamorphic_api - INFO - [logging_config.py:121] - Database initialized successfully
+2025-06-09 18:45:17 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:17 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=5
+2025-06-09 18:45:17 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3028 chars, complexity=100
+2025-06-09 18:45:27 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:45:27 - metamorphic_api - INFO - [logging_config.py:121] - Database initialized successfully
+2025-06-09 18:45:27 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:45:28 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:45:28 - metamorphic_api - INFO - [logging_config.py:121] - Database initialized successfully
+2025-06-09 18:45:28 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Database initialized successfully
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=5
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3060 chars, complexity=100
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=4
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3032 chars, complexity=100
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=multi_stage, complexity=4
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3336 chars, complexity=100
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=reflective, complexity=4
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2677 chars, complexity=100
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=traditional, complexity=4
+2025-06-09 18:48:25 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2047 chars, complexity=100
+2025-06-09 18:48:35 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 18:48:35 - metamorphic_api - INFO - [logging_config.py:121] - Database initialized successfully
+2025-06-09 18:48:35 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
+2025-06-09 18:48:35 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=5
+2025-06-09 18:48:35 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3027 chars, complexity=100
+2025-06-09 18:48:35 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=staged, complexity=4
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3017 chars, complexity=100
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=multi_stage, complexity=4
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 3339 chars, complexity=100
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=reflective, complexity=4
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2676 chars, complexity=100
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Generating enhanced payload: type=traditional, complexity=4
+2025-06-09 18:48:36 - metamorphic_api - INFO - [logging_config.py:121] - Enhanced payload generated: 2062 chars, complexity=100
+2025-06-09 19:02:11 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 19:02:29 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 19:03:11 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 19:03:29 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 19:04:23 - metamorphic_api - INFO - [logging_config.py:121] - Payload written to file: metamorphic_payload_20250609_190423_336811_6OOh8lSjFH4z.ps1
+2025-06-09 19:38:16 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 19:38:22 - metamorphic_api - INFO - [logging_config.py:121] - Payload written to file: metamorphic_payload_20250609_193822_045280_yUQy7sM1PW01.ps1
+2025-06-09 19:43:20 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced payload generator available
+2025-06-09 19:43:20 - metamorphic_api - INFO - [logging_config.py:121] - Ultra-advanced generator initialized
