@@ -14,6 +14,7 @@ A secure and stealthy API service that generates unique, metamorphic PowerShell 
   - `/generate`: Returns raw PowerShell content
   - `/download`: Serves payload as downloadable .ps1 file
 - **Unique Payloads**: Each generation creates a different payload, verified through MD5 hashing
+- **Configurable Generation**: Runtime options allow custom C2 endpoints and junk-code density
 
 ## Metamorphic Engine Architecture
 
@@ -43,6 +44,8 @@ The metamorphic engine employs several sophisticated techniques to generate uniq
   - String concatenation
   - Reverse string operations
   - XOR encryption with random keys
+  - ROT13 transformation
+  - Unicode escape sequences
 
 #### Integer Obfuscation
 - **Mathematical Transformations**:
@@ -50,6 +53,7 @@ The metamorphic engine employs several sophisticated techniques to generate uniq
   - Hexadecimal representation
   - String parsing
   - Sum decomposition
+  - XOR masking
 
 ### 2. Polymorphic Components
 

